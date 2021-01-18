@@ -9,7 +9,7 @@ Real-time market data is obtained using Alpaca Data API, which is a consolidatio
 * Nasdaq PSX
 * NYSE Chicago, Inc.
 
-Trading is conducted on the Alpaca trading platform. Positions follow the momentum for levels break-outs, else buys near Fibonacci support and sells near resistance if confirmed by ADX based on custom indicator parameters.
+Trading is conducted using the Alpaca Trade API. Positions follow the momentum for levels break-outs, else buys near Fibonacci support and sells near resistance if confirmed by ADX based on custom indicator parameters.
 
 ### 3-Year Backtesting conducted using Blueshift  
 ![alt text](https://github.com/DarrenNL/AlgorithmicTrading/blob/main/3%20Year%20Backtest%20(2018-2020).png?raw=true)
