@@ -1,7 +1,7 @@
 # AlgorithmicTrading
 
 This is a long only strategy based on technical indicators from TA-LIB (work-in-progress).  
-Real-time market data is obtained using Alpaca Data API, which is a consolidation of data sources from five different exchanges:
+Real-time market data is obtained using Alpaca Data API, which is a consolidation of data sourced from five different exchanges:
 
 * IEX (Investors Exchange LLC)
 * NYSE National, Inc.
