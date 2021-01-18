@@ -10,10 +10,7 @@ import bisect
 
 import alpaca_trade_api as tradeapi
 
-
-from secrets import API_KEY_ID, API_SECRET_KEY
-
-API_BASE_URL = 'https://paper-api.alpaca.markets'
+from secrets import API_BASE_URL, API_KEY_ID, API_SECRET_KEY, ALL_STOCKS, PARAMETER_SETTINGS
 
 class SupResis:
     def __init__(self):
@@ -23,18 +20,10 @@ class SupResis:
         self.alpaca = tradeapi.REST(API_KEY_ID, API_SECRET_KEY, API_BASE_URL, 'v2')
         
         # Universe selection
-        self.allStocks = ['AMZN','AAPL','WMT','MU','BAC','KO',
-                          'BA','GS','MSFT','NIO','TSLA']
+        self.allStocks = ALL_STOCKS
 
         # Strategy parameters
-        self.params = {'indicator_lookback':375,
-                       'indicator_freq':'minute',
-                       'buy_signal_threshold':0.5,
-                       'sell_signal_threshold':-0.5,
-                       'ADX_period':120,
-                       'trade_freq':1,
-                       'leverage':1}
-        
+        self.params = PARAMETER_SETTINGS
         self.data = dict.fromkeys(self.allStocks,0)
         self.signals = dict.fromkeys(self.allStocks,0)
         self.target_position = dict.fromkeys(self.allStocks,0)
@@ -108,6 +97,10 @@ class SupResis:
         """
             A function to define core strategy steps
         """
+        orders = self.alpaca.list_orders(status='open')
+        for order in orders:
+            self.alpaca.cancel_order(order.id)
+        
         self.get_data()
         self.generate_signals()
         self.generate_target_position()
