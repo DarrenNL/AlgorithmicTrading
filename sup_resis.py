@@ -256,11 +256,6 @@ class SupResis:
                             args=[stock,self.target_position[stock],'sell','market'])
                     tSO.start()
                     tSO.join()
-    '''                
-    def test(self):
-        self.get_data()
-        #print(self.alpaca.get_account().portfolio_value)
-        print(self.data['AMZN']['close'][-1])
-    '''
+
 sr = SupResis()
-sr.rebalance()
+sr.run()
