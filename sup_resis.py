@@ -1,16 +1,15 @@
 import threading
 import time
 import datetime
-from math import floor
-
 import pandas as pd
 import talib as ta
 import numpy as np
 import bisect
+from math import floor
 
 import alpaca_trade_api as tradeapi
 
-
+# Import personal algorithm settings
 from secrets import API_BASE_URL, API_KEY_ID, API_SECRET_KEY, ALL_STOCKS, PARAMETER_SETTINGS
 
 class SupResis:
