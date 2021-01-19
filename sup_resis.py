@@ -10,6 +10,7 @@ import bisect
 
 import alpaca_trade_api as tradeapi
 
+
 from secrets import API_BASE_URL, API_KEY_ID, API_SECRET_KEY, ALL_STOCKS, PARAMETER_SETTINGS
 
 class SupResis:
@@ -24,6 +25,7 @@ class SupResis:
 
         # Strategy parameters
         self.params = PARAMETER_SETTINGS
+        
         self.data = dict.fromkeys(self.allStocks,0)
         self.signals = dict.fromkeys(self.allStocks,0)
         self.target_position = dict.fromkeys(self.allStocks,0)
@@ -194,7 +196,7 @@ class SupResis:
             A function to define target portfolio
         """
         num_stocks = len(self.allStocks)
-        weight = round(1.0/num_stocks,2)*self.params['leverage']*self.alpaca.get_account().portfolio_value
+        weight = round(1.0/num_stocks,2)*self.params['leverage']*float(self.alpaca.get_account().portfolio_value)
 
         for stock in self.allStocks:
             if self.signals[stock] > self.params['buy_signal_threshold']:
@@ -216,37 +218,36 @@ class SupResis:
                 self.long.append(stock)
         print('We are taking a long position in : ' + str(self.long))
         
-        executed = []
         current_portfolio = self.alpaca.list_positions()
-        current_positions = dict()
+        current_positions =  dict()
         for entity in current_portfolio:
-            current_positions[entity['symbol']] = entity['qty']
+            current_positions[entity.symbol] = int(float(entity.qty))
         for stock in self.allStocks:
             if self.target_position[stock] <= 0:
                 if stock in current_positions:
                     tSO = threading.Thread(
-                        target=self.submitOrder, 
-                        args=[stock,current_positions[stock],'sell','market'])
+                        target=self.alpaca.submit_order, 
+                        args=[stock,current_positions[stock],'sell','market','day'])
                     tSO.start()
                     tSO.join()
             elif self.target_position[stock] > 0:
-                if stock in positions:
+                if stock in current_positions:
                     if self.target_position[stock] > current_positions[stock]:
                         tSO = threading.Thread(
-                            target=self.submitOrder, 
-                            args=[stock,self.target_position[stock] - current_positions[stock],'buy','market'])
+                            target=self.alpaca.submit_order, 
+                            args=[stock,self.target_position[stock] - current_positions[stock],'buy','market','day'])
                         tSO.start()
                         tSO.join()
                     elif self.target_position[stock] < current_positions[stock]:
                         tSO = threading.Thread(
-                            target=self.submitOrder, 
-                            args=[stock,current_positions[stock] - self.target_position[stock],'sell','market'])
+                            target=self.alpaca.submit_order, 
+                            args=[stock,current_positions[stock] - self.target_position[stock],'sell','market','day'])
                         tSO.start()
                         tSO.join()
                 elif stock in self.long:
                     tSO = threading.Thread(
-                            target=self.submitOrder, 
-                            args=[stock,self.target_position[stock],'sell','market'])
+                            target=self.alpaca.submit_order, 
+                            args=[stock,self.target_position[stock],'buy','market','day'])
                     tSO.start()
                     tSO.join()
 
