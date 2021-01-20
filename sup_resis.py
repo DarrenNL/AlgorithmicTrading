@@ -71,7 +71,7 @@ class SupResis:
                     tSubmitOrder.join()
                     
                 #Run script again after market close for next trading day
-                print('Sleeping until market clost (15 minutes).')
+                print('Sleeping until market close (15 minutes).')
                 time.sleep(60*15)
             else:
                 #Rebalance the portfolio
