@@ -147,10 +147,6 @@ class SupResis:
         """ 
             Computes the current Fibonnaci support and resistance levels. 
             Returns the distant of the last price point from both.
-            Args:
-                px (ndarray): input price array
-            Returns:
-                Tuple, distance from support and resistance levels.
         """
         px = self.data[stock]['close']
         def fibonacci_levels(px):
@@ -179,12 +175,7 @@ class SupResis:
 
     def adx(self,stock):
         """ 
-            returns average directional index.
-            Args:
-                px (DataFrame): input price array with OHLC columns
-                lookback (int): lookback window size
-            Returns:
-                Float, last value of the ADX.
+            Returns average directional index.
         """
         px = self.data[stock]
         signal = ta.ADX(px['high'], px['low'], px['close'], timeperiod=self.params['ADX_period'])
@@ -192,7 +183,7 @@ class SupResis:
 
     def generate_target_position(self):
         """
-            A function to define target portfolio
+            A function to define target positions for all stocks
         """
         num_stocks = len(self.allStocks)
         weight = round(1.0/num_stocks,2)*self.params['leverage']*float(self.alpaca.get_account().portfolio_value)
