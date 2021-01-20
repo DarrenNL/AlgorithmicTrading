@@ -212,34 +212,43 @@ class SupResis:
         current_positions =  dict()
         for entity in current_portfolio:
             current_positions[entity.symbol] = int(float(entity.qty))
+
         for stock in self.allStocks:
             if self.target_position[stock] <= 0:
                 if stock in current_positions:
+                    qty = current_positions[stock]
                     tSO = threading.Thread(
                         target=self.alpaca.submit_order, 
-                        args=[stock,current_positions[stock],'sell','market','day'])
+                        args=[stock,qty,'sell','market','day'])
                     tSO.start()
                     tSO.join()
+                    print('Market order of |Sell ' + str(qty) + ' ' + stock + '| submitted.')
             elif self.target_position[stock] > 0:
                 if stock in current_positions:
                     if self.target_position[stock] > current_positions[stock]:
+                        qty = self.target_position[stock] - current_positions[stock]
                         tSO = threading.Thread(
                             target=self.alpaca.submit_order, 
-                            args=[stock,self.target_position[stock] - current_positions[stock],'buy','market','day'])
+                            args=[stock,qty,'buy','market','day'])
                         tSO.start()
                         tSO.join()
+                        print('Market order of |Buy ' + str(qty) + ' ' + stock + '| submitted.')
                     elif self.target_position[stock] < current_positions[stock]:
+                        qty = current_positions[stock] - self.target_position[stock]
                         tSO = threading.Thread(
                             target=self.alpaca.submit_order, 
-                            args=[stock,current_positions[stock] - self.target_position[stock],'sell','market','day'])
+                            args=[stock,qty,'sell','market','day'])
                         tSO.start()
                         tSO.join()
+                        print('Market order of |Sell ' + str(qty) + ' ' + stock + '| submitted.')
                 elif stock in self.long:
+                    qty = self.target_position[stock]
                     tSO = threading.Thread(
                             target=self.alpaca.submit_order, 
-                            args=[stock,self.target_position[stock],'buy','market','day'])
+                            args=[stock,qty,'buy','market','day'])
                     tSO.start()
                     tSO.join()
+                    print('Market order of |Buy ' + str(qty) + ' ' + stock + '| submitted.')
 
 sr = SupResis()
 sr.run()
